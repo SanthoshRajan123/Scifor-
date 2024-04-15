@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Email Results</title>
+    <style>
+        .valid-emails {
+            color: green;
+        }
+        .invalid-emails {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Email Validation Results</h1>
+    
+    <h2>Valid Email Addresses:</h2>
+    <ul class ="valid-emails">
+      {% for email in valid_emails %}
+        <li>{{ email }}</li>
+      {% endfor %}
+    </ul>
+    
+    <form id="sendEmailForm" method="POST" action="{% url 'send_email' %}">
+        {% csrf_token %}
+        <input type="hidden" name="valid_emails" value="{{ valid_emails|join:',' }}">
+        <button type="button" onclick="showEmailForm()">Send Mail</button>
+    </form>
+    
+    <div id="emailForm" style="display: none;">
+        <h2>Send Email</h2>
+        <form method="POST" action="{% url 'send_email' %}">
+            {% csrf_token %}
+            <label for="subject">Subject:</label>
+            <input type="text" id="subject" name="subject" required><br><br>
+            
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" rows="4" required></textarea><br><br>
+            
+            <input type="hidden" name="valid_emails" value="{{ valid_emails|join:',' }}">
+            
+            <button type="submit">Send</button>
+        </form>
+    </div>
+    
+    <h2>Invalid Email Addresses:</h2>
+    <ul class="invalid-emails">
+        {% for email in invalid_emails %}
+            <li>{{ email }}</li>
+        {% endfor %}
+    </ul>
+    
+    <script>
+        function showEmailForm() {
+            document.getElementById('sendEmailForm').style.display = 'none';
+            document.getElementById('emailForm').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
